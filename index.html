@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<meta charset="UTF-8">
+			<title>Profit-Loss Calculator</title>
+		</meta>
+		<!-- bootstrap 3.0.2 -->
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+	  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script src="js/custom.js"></script>
+		<script src="js/html.js"></script>
+		<script type="application/x-javascript">
+			$(document).ready( function() {
+				 	$( "#processTabs" ).tabs();
+			 });
+		</script>
+		<style>
+		h3 {
+			background: #0174d8b5;
+			color: white;
+			padding: 3px
+		}
+		.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+			font-weight: 600;
+			padding: 2px;
+		}
+		.table-striped tbody tr:nth-of-type(odd) , #usdHeader div{
+		    background-color: #5bc0de!important;
+				color:white;
+		}
+		.table-striped tbody tr:nth-of-type(even), #usdConversions div{
+		    background-color: #0275d8!important;
+				color:white;
+		}
+		#usdConversions div{
+			margin-bottom: 15px;
+			height: 25px
+		}
+		.table-striped thead th{
+		    background-color: #5cb85c!important;
+				color:white;
+		}
+		</style>
+</head>
+	<body style="font-size:12px; padding:10px; letter-spacing: 2px;">
+		<div id="processTabs">
+			<ul>
+				<li><a href="#usdTab">USD</a></li>
+				<li><a href="#tetherTab">Tether</a></li>
+				<li><a href="#inrTab">INR-Crypto</a></li>
+				<li><a href="#oldtab">Old</a></li>
+			</ul>
+			<div id="usdTab" class="container">
+  			<div class="row" id="usdHeader" >
+				</div>
+				<div class="row"  id="usdConversions" >
+				</div>
+				<input type="button" id="btnreload" class="btn-primary" value="Reload"/>
+				<hr/>
+				<div  >
+					<table class='table table-striped'>
+						<thead>
+							<tr class='warning'  id="cryptoPricesHeader">
+							</tr>
+						</thead>
+						<tbody id="cryptoPrices">
+							<tr  >
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="buySellMarkets"></div>
+			</div>
+			<div id="tetherTab">
+			</div>
+			<div id="inrTab">
+			</div>
+			<div id="oldtab">
+				<iframe src="old.html" style="border:0" width="1000px" height="1000px" allowfullscreen></iframe>
+
+			</div>
+		</div>
+  </body>
+</html>

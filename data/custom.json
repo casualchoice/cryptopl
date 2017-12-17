@@ -1,0 +1,76 @@
+{
+  "dollar_rate"  : 64.5,
+  "bank_factor" : 0.035,
+  "gst_factor" : 0.18,
+  "buy_sell_markets" : ["cex-koinex", "bitfinex-koinex","bittrex-koinex","bitfinex-cex", "koinex-cex" ,"koinex-bitfinex","koinex-bittrex", "cex-bitfinex"],
+  "global_crypto_supported" : ["BTC", "BCH", "ETH", "XRP"],
+  "exchanges" : {
+    "cex" : {
+      "accepts_usd_visa" : 1,
+      "crypto_supported" : ["BTC", "BCH", "ETH", "XRP"],
+      "api_url" : "https://cex.io/api/last_prices/BTC/USD/LTC",
+      "withdrawal_charges" :  {
+        "BTC" : 0.001,
+        "BCH" : 0.001,
+        "ETH" : 0.01,
+        "XRP" : 0.02
+      },
+      "trading_fees" : {
+        "buy" : 0.2,
+        "sell" : 0.2
+      },
+      "visa_commision": 3.5,
+      "visa_commision_tax": 0.25
+    },
+    "koinex" : {
+      "accepts_usd_visa" : 0,
+      "crypto_supported" : ["BTC", "BCH", "ETH", "XRP", "LTC"],
+      "api_url" : "https://koinex.in/api/ticker",
+      "withdrawal_charges" :  {
+        "BTC" : 0.001,
+        "BCH" : 0.001,
+        "ETH" : 0.001,
+        "XRP" : 0.02,
+        "LTC" : 0.01
+      },
+      "trading_fees" : {
+        "buy" : 0.25,
+        "sell" : 0
+      }
+    },
+    "bitfinex" : {
+      "accepts_usd_visa" : 1,
+      "crypto_supported" : ["BTC", "BCH", "ETH", "XRP"],
+      "api_url" : "https://api.bitfinex.com/v2/tickers?symbols=tBTCUSD,tBCHUSD,tLTCUSD,tETHUSD,tXRPUSD",
+      "withdrawal_charges" :  {
+        "BTC" : 0.0005,
+        "BCH" : 0.0001,
+        "ETH" : 0.01,
+        "XRP" : 0.02
+      },
+      "trading_fees" : {
+        "buy" : 0.2,
+        "sell" : 0.2
+      },
+      "visa_commision": 3.5,
+      "visa_commision_tax": 0.25
+    },
+    "bittrex" : {
+      "accepts_usd_visa" : 1,
+      "crypto_supported" : ["BTC", "BCH", "ETH", "XRP"],
+      "api_url" : "https://bittrex.com/api/v1.1/public/getmarketsummary?market=usdt-",
+      "withdrawal_charges" :  {
+        "BTC" : 0.0005,
+        "BCH" : 0.0001,
+        "ETH" : 0.002,
+        "XRP" : 5
+      },
+      "trading_fees" : {
+        "buy" : 0.2,
+        "sell" : 0.2
+      },
+      "visa_commision": 3.5,
+      "visa_commision_tax": 0.25
+    }
+  }
+}

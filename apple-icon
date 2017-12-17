@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+			<meta charset="UTF-8">
+			<title>Profit-Loss Calculator</title>
+
+			<!-- bootstrap 3.0.2 -->
+			<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+			<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+</head>
+	<body>
+		<table id="customers" class="table table-striped">
+				<thead>
+					<tr class="warning">
+						<th>$ Credit then used to buy</th>
+						<th>Visa Transaction($)</th>
+						<th>Dollar rate</th>
+						<th>Visa Transaction(INR)</th>
+						<th>Margin Charges</th>
+						<th>GST</th>
+						<th>Total INR </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Chinna</td>
+						<td>1,363,480,000</td>
+						<td>March 24, 2014</td>
+						<td>19.1</td>
+						<td>19.1</td>
+						<td>19.1</td>
+						<td>19.1</td>
+					</tr>
+
+				</tbody>
+			</table>
+  </body>
+</html>

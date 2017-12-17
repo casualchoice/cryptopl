@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<meta charset="UTF-8">
+			<title>Profit-Loss Calculator</title>
+		</meta>
+		<!-- bootstrap 3.0.2 -->
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script type="application/x-javascript">
+		var withdrawalCharges = {
+			"BTC" : {
+				"CEX" : "0.001",
+				"Koinex": "0.001",
+				"Bittrex": "0.001"
+			},
+			"BCH" : {
+				"CEX" : "0.001",
+				"Koinex": "0.001",
+				"Bittrex": "0.001"
+			},
+			"ETH" : {
+				"CEX" : "0.01",
+				"Koinex": "0.003",
+				"Bittrex": "0.002"
+			},
+			"LTC" : {
+				"CEX" : "0.001",
+				"Koinex": "0.01",
+				"Bittrex": "0.1"
+			},
+			"XRP" : {
+				"CEX" : "0.02",
+				"Koinex": "0.02",
+				"Bittrex": "5"
+			},
+			"BTG" : {
+				"CEX" : "0.001",
+				"Koinex": "0.001",
+				"Bittrex": "0.001"
+			}
+		};
+		var cexApiURL = "https://cex.io/api/last_prices/BTC/USD/LTC";
+		var koinexApiUrl = "https://koinex.in/api/ticker";
+		var bitfinexApiUrl = "https://api.bitfinex.com/v2/tickers?symbols=tBTCUSD,tBCHUSD,tLTCUSD,tETHUSD,tXRPUSD"
+		var bittrexApiUrl = "https://bittrex.com/api/v1.1/public/getmarketsummary?market=usdt-"
+		var cryptoToTrack = ["BTC", "BCH", "ETH", "XRP","LTC","BTG"];
+		var cexFactor = 1.035;
+		var bankFactor = 0.035;
+		var gstFactor = 0.18;
+		var cexComission = 0.9;
+		var dollarRate = 64.4;
+		var lblBankTotal;
+		$(document).ready(function() {
+			loadWithdrawalCharges (withdrawalCharges);
+			 $('#testDollar').change(function() {
+				 recalculate()
+				 //setInterval(function(){ recalculate(); }, 10000);
+			 });
+			 document.getElementById("btnreload").addEventListener("click", function(){
+				    recalculate()
+				});
+			 function recalculate () {
+				 var cextotal = $('#testDollar').val()* cexFactor + cexComission;
+					$('#lblCexTotal').text(round(cextotal,2));
+					$('#lblDollarRate').text(dollarRate);
+					var lblBankTrans = round(cextotal * dollarRate,2);
+					var lblBankMargin = round(lblBankTrans * bankFactor,2);
+					var lblBankGST = round(lblBankMargin * gstFactor,2)
+					lblBankTotal = round(lblBankTrans + lblBankMargin  + lblBankGST,2);
+					$('#lblBankTrans').text(lblBankTrans);
+					$('#lblBankMargin').text(lblBankMargin);
+
+					$('#lblBankGST').text(lblBankGST);
+					$('#lblBankTotal').text(lblBankTotal);
+					$('#cexTable').html(getheader());
+					$('#bitfinexTable').html(getheader());
+					$('#bittrexTable').html(getheader());
+					loadData();
+			 }
+			 function getheader() {
+				 return "<tr>" +
+								 "<td></td>"+
+								 "<td>USD</td>"+
+								 "<td>INR</td>"+
+								 "<td>~Crypto</td>"+
+								 "<td>INR</td>"+
+								 "<td>Diff</td>"+
+								 "<td>~Crypto</td>"+
+								 "<td>INR Credited</td>"+
+								 "<td>PL</td></tr>"
+			 }
+			 function round(value, decimals) {
+			     return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+			 }
+
+			 function loadData()
+			 {
+				 $.ajax({url: koinexApiUrl, success: function(koinResult){
+
+						loadCexData(koinResult)
+						loadBitFinexData(koinResult)
+						loadBittrexData(koinResult)
+    		 }});
+			 }
+			 function loadCexData(koinResult) {
+				 $.ajax({url: cexApiURL, success: function(result){
+						if(result.ok === "ok") {
+						 for (var index in result.data) {
+							 var crypto = result.data[index];
+							 if(cryptoToTrack.indexOf(crypto.symbol1) != -1 && crypto.symbol2 === "USD") {
+								 var row = {}
+								 var html = $('#cexTable').html();
+								 row.inr = dollarRate * crypto.lprice;
+								 row.crypto = Number ($('#testDollar').val())/crypto.lprice;
+								 row.koinexPrice = koinResult.prices[crypto.symbol1];
+								 row.diff = 100 * (row.koinexPrice-row.inr) / row.koinexPrice;
+								 row.cryptoKoinex = row.crypto - withdrawalCharges[crypto.symbol1].Koinex;
+								 row.inrCredited = row.cryptoKoinex * row.koinexPrice;
+								 row.pl = row.inrCredited - lblBankTotal;
+								 row.symbol = crypto.symbol1;
+								 row.lprice = crypto.lprice;
+
+									$('#cexTable').html(html + getCryptoRow(row));
+
+							 }
+						 }
+						}
+				}});
+
+			 }
+			 function loadBitFinexData(koinResult)
+			 {
+						 $.ajax({url: bitfinexApiUrl, success: function(result){
+							 for (var index in result) {
+								  const symbol = result[index][0].substring(1,4)
+								 if(cryptoToTrack.indexOf(symbol) != -1 ) {
+									 var row = {}
+									 var html = $('#bitfinexTable').html();
+									 row.inr = dollarRate * result[index][1];
+									 row.crypto = Number ($('#testDollar').val())/result[index][1];
+									 row.koinexPrice = koinResult.prices[symbol];
+									 row.diff = 100 * (row.koinexPrice-row.inr) / row.koinexPrice;
+									 row.cryptoKoinex = row.crypto - withdrawalCharges[symbol].Koinex;
+									 row.inrCredited = row.cryptoKoinex * row.koinexPrice;
+									 row.pl = row.inrCredited - lblBankTotal;
+									 row.symbol = symbol;
+									 row.lprice = result[index][1];
+									 $('#bitfinexTable').html(html + getCryptoRow(row));
+
+								 }
+							 }
+						}});
+			 }
+
+			 function loadBittrexData(koinResult) {
+				 const proxyurl = "https://cors-anywhere.herokuapp.com/";
+				  for (var index in cryptoToTrack) {
+						$.ajax({
+							url: proxyurl+bittrexApiUrl+cryptoToTrack[index],
+							success: function(response){
+								if(response.success){
+									var row = {}
+									let symbol = response.result[0].MarketName.replace("USDT-","")
+									var html = $('#bittrexTable').html();
+									row.inr = dollarRate * response.result[0].Last;
+									row.crypto = Number ($('#testDollar').val())/response.result[0].Last;
+									row.koinexPrice = koinResult.prices[symbol];
+									row.diff = 100 * (row.koinexPrice-row.inr) / row.koinexPrice;
+									row.cryptoKoinex = row.crypto - withdrawalCharges[symbol].Koinex;
+									row.inrCredited = row.cryptoKoinex * row.koinexPrice;
+									row.pl = row.inrCredited - lblBankTotal;
+									row.symbol = symbol;
+									row.lprice = round (response.result[0].Last,2);
+									$('#bittrexTable').html(html + getCryptoRow(row));
+								}
+					 }});
+					}
+			 }
+			 function getCryptoRow (row){
+				 var row = "<tr>" +
+								"<td>"+row.symbol+"</td>"+
+								"<td>"+row.lprice  +"</td>"+
+								"<td>" + round(row.inr,2) + "</td>"+
+								"<td>"+ Math.round(row.crypto *1000)/1000+"</td>"+
+								"<td>"+ row.koinexPrice+"</td>"+
+								"<td>"+ round(row.diff,2)+"</td>"+
+								"<td>"+ Math.round(row.cryptoKoinex * 1000) /1000+"</td>"+
+								"<td>"+round(row.inrCredited,2)+"</td>"+
+								"<td>"+round(row.pl,2)+"</td></tr>";
+					return row;
+			 }
+			 function loadWithdrawalCharges(charges) {
+				  for (var index in cryptoToTrack) {
+	 				  var crypto = cryptoToTrack[index];
+					 var tableContent = $('#withdrawalChargesTable').html();
+					 var html = "<tr>" +
+					 "<td>"+ crypto + "</td>" +
+					 "<td>" +  charges[crypto].CEX + "</td>"+
+					 "<td>" +  charges[crypto].Koinex+"</td>"+
+					 "<td>" +  charges[crypto].Bittrex+"</td>"+
+					 "</tr>";
+					 $('#withdrawalChargesTable').html(tableContent + html);
+					}
+			 }
+		});
+		</script>
+		<style>
+		.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+			font-weight: 600;
+			padding: 2px;
+		}
+		.table-striped tbody tr:nth-of-type(odd) {
+		    background-color: #5bc0de!important;
+				color:white;
+		}
+		.table-striped tbody tr:nth-of-type(even) {
+		    background-color: #0275d8!important;
+				color:white;
+		}
+		.table-striped thead th{
+		    background-color: #5cb85c!important;
+				color:white;
+		}
+		</style>
+</head>
+	<body style="font-size:12px; padding:10px; letter-spacing: 2px;">
+		<table class="table table-striped ">
+				<thead>
+					<tr class="warning">
+						<th>CEX $ Credit</th>
+						<th>Visa Transaction($)</th>
+						<th>Dollar rate</th>
+						<th>Visa Transaction(INR)</th>
+						<th>Margin Charges</th>
+						<th>GST</th>
+						<th>Total INR </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input type="text" value="500" style="color: black;" id="testDollar"></input></td>
+						<td><label id="lblCexTotal"></label></td>
+						<td><label id="lblDollarRate"></label></td>
+						<td><label id="lblBankTrans"></label></td>
+						<td><label id="lblBankMargin"></label></td>
+						<td><label id="lblBankGST"></label></td>
+						<td><label id="lblBankTotal"></label></td>
+					</tr>
+				</tbody>
+			</table>
+			<input type="button" id="btnreload" class="btn-primary" value="Reload"/>
+			<hr/>
+			<table class="table table-striped">
+				<thead>
+					<tr class="warning">
+						<th>Crypto coin</th>
+						<th colspan="3">CEX</th>
+						<th  colspan="5">Koinex</th>
+						<!--<th  colspan="6">Bittrex</th>-->
+					</tr>
+				</thead>
+				<tbody id="cexTable">
+
+				</tbody>
+			</table>
+			<table class="table table-striped">
+				<thead>
+					<tr class="warning">
+						<th>Crypto coin</th>
+						<th colspan="3">Bitfinex</th>
+						<th  colspan="5">Koinex</th>
+						<!--<th  colspan="6">Bittrex</th>-->
+					</tr>
+				</thead>
+				<tbody id="bitfinexTable">
+
+				</tbody>
+			</table>
+			<table class="table table-striped">
+				<thead>
+					<tr class="warning">
+						<th>Crypto coin</th>
+						<th colspan="3">Bittrex</th>
+						<th  colspan="5">Koinex</th>
+						<!--<th  colspan="6">Bittrex</th>-->
+					</tr>
+				</thead>
+				<tbody id="bittrexTable">
+
+				</tbody>
+			</table>
+
+			<br/>
+			<hr/>
+			<table class="table table-striped">
+				<thead>
+					<tr class="success">
+						<th>Withdrawal Charges</th>
+						<th>Transaction Factors</th>
+					</tr>
+				<thead>
+				<tbody>
+					<tr>
+						<td>
+						<table class="table table-striped">
+							<thead>
+								<tr class="warning">
+									<th>Crypto coin</th>
+									<th>CEX</th>
+									<th>Koinex</th>
+									<th>Bittrex</th>
+								</tr>
+							</thead>
+							<tbody id="withdrawalChargesTable">
+
+							</tbody>
+						</table>
+						</td>
+						<td>
+							<table class="table table-striped">
+								<thead>
+									<tr class="warning">
+										<th></th>
+										<th>CEX</th>
+										<th>INR Bank</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Conversion Charges</td>
+										<td>3.5%</td>
+										<td>3.5%</td>
+									</tr>
+									<tr>
+										<td>Factor</td>
+										<td>0.035</td>
+										<td>0.035</td>
+									</tr>
+									<tr>
+										<td>Tax</td>
+										<td>0.9</td>
+										<td>0.18</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</thead>
+			</table>
+
+  </body>
+</html>
