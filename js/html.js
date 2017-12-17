@@ -81,3 +81,21 @@ function getBuySellMarket(market) {
 
   return table
 }
+
+function poppulateWithdrawalCharges() {
+  $('#withdrawalChargesHeader').html('')
+  $('#withdrawalCharges').html('')
+  $('#withdrawalChargesHeader').append($("<th></th>").text("Exchange"));
+  const basicExchangesData = JSON.parse(localStorage.getItem("basicExchangesData"));
+  $.each(basicExchangesData.global_crypto_supported, function(index, symbol) {
+      $('#withdrawalChargesHeader').append($("<th></th>").text(symbol));
+  })
+  $.each( basicExchangesData.exchanges, function(exchangeKey, exchange) {
+    let row = "<tr><td>" + exchangeKey + "</td>"
+    $.each(basicExchangesData.global_crypto_supported, function(index, symbol) {
+      let cryptoColumn  = exchange.withdrawal_charges[symbol]
+      row += "<td >" + cryptoColumn + "</td>"
+    })
+    $('#withdrawalCharges').append(row +"</tr>")
+  })
+}
