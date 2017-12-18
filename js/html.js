@@ -26,7 +26,9 @@ function populateCryptoPrices () {
      let row = "<tr><td>" + exchangeKey + "</td>"
 
     $.each(basicExchangesData.global_crypto_supported, function(index, symbol) {
-      let cryptoColumn  = exchange[symbol].lpriceInr + " (" + exchange[symbol].lpriceUsd + ") - " + exchange[symbol].crypto
+      let cryptoColumn  = typeof exchange[symbol] != 'undefined'
+      ? (exchange[symbol].lpriceInr + " (" + exchange[symbol].lpriceUsd + ") - " + exchange[symbol].crypto)
+      : "NA"
       row += "<td >" + cryptoColumn + "</td>"
     })
     $('#cryptoPrices').append(row +"</tr>")
@@ -56,7 +58,7 @@ function getBuySellMarket(market) {
                 "<thead>" +
                   "<tr class='warning'>" +
                     "<th>Coin</th>" +
-                    "<th>Diff</th>" +
+                    "<th>Diff (%)</th>" +
                     "<th>Crypto</th>" +
                     "<th>Amount</th>" +
                     "<th>PL</th>" +
@@ -66,16 +68,19 @@ function getBuySellMarket(market) {
   let buyExchange = cryptoPrices.exchanges[market.split("-")[0]]
   let sellExchange = cryptoPrices.exchanges[market.split("-")[1]]
   $.each(basicExchangesData.global_crypto_supported, function(index, symbol) {
+    if (typeof buyExchange[symbol] != 'undefined' && typeof sellExchange[symbol] != 'undefined') {
       let buyPrice = buyExchange[symbol].lpriceInr
       let sellPrice = sellExchange[symbol].lpriceInr
       let crypto = buyExchange[symbol].crypto - basicExchangesData.exchanges[market.split("-")[0]].withdrawal_charges[symbol]
       let inr = round(crypto *  sellExchange[symbol].lpriceInr,2)
+      let pl = round((inr - usdCurrencyData[market.split("-")[0]+"_inr"]),2)
       table += "<tr><td>" + symbol + "</td>"
       table += "<td>" + round (100 * ((sellPrice - buyPrice) / buyPrice) ,2)+ "</td>"
       table += "<td>" + round(crypto,4) + "</td>"
       table += "<td>" + inr + "</td>"
-      table += "<td>" + round((inr - usdCurrencyData[market.split("-")[0]+"_inr"]),2) + "</td>"
+      table += "<td>" + pl  + " ("+round(pl/usdCurrencyData[market.split("-")[0]+"_inr"]*100,2)+"%)</td>"
       table += "</tr>"
+    }
   })
   table += "</tbody></table>"
 

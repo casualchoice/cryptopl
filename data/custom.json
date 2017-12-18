@@ -3,7 +3,7 @@
   "bank_factor" : 0.035,
   "gst_factor" : 0.18,
   "buy_sell_markets" : ["cex-koinex", "bitfinex-koinex","bittrex-koinex","bitfinex-cex", "koinex-cex" ,"koinex-bitfinex","koinex-bittrex", "cex-bitfinex"],
-  "global_crypto_supported" : ["BTC", "BCH", "ETH", "XRP"],
+  "global_crypto_supported" : ["BTC", "BCH", "ETH", "XRP", "LTC"],
   "exchanges" : {
     "cex" : {
       "accepts_usd_visa" : 1,
@@ -13,7 +13,8 @@
         "BTC" : 0.001,
         "BCH" : 0.001,
         "ETH" : 0.01,
-        "XRP" : 0.02
+        "XRP" : 0.02,
+        "LTC" : 0
       },
       "trading_fees" : {
         "buy" : 0.2,
@@ -46,7 +47,8 @@
         "BTC" : 0.0005,
         "BCH" : 0.0001,
         "ETH" : 0.01,
-        "XRP" : 0.02
+        "XRP" : 0.02,
+        "LTC" : 0.001
       },
       "trading_fees" : {
         "buy" : 0.2,
@@ -63,7 +65,8 @@
         "BTC" : 0.0005,
         "BCH" : 0.0001,
         "ETH" : 0.002,
-        "XRP" : 5
+        "XRP" : 5,
+        "LTC" :0.01
       },
       "trading_fees" : {
         "buy" : 0.2,
