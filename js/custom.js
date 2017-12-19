@@ -7,7 +7,7 @@ $(document).ready(function() {
       localStorage.setItem("basicExchangesData", JSON.stringify(res))
       usdCurrencyData["dollar_rate"] = res.dollar_rate
       initializeUSDTab()
-      poppulateWithdrawalCharges()
+      populateWithdrawalCharges()
     }
   })
   document.getElementById("btnreload").addEventListener("click", function(){
@@ -68,6 +68,7 @@ function loadCryptoPrices() {
     })
     populateCryptoPrices()
     populateBuySellMarkets()
+    populateBuySellCryptos()
   });
 }
 

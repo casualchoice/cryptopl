@@ -2,7 +2,8 @@
   "dollar_rate"  : 64.5,
   "bank_factor" : 0.035,
   "gst_factor" : 0.18,
-  "buy_sell_markets" : ["cex-koinex", "bitfinex-koinex","bittrex-koinex","bitfinex-cex", "koinex-cex" ,"koinex-bitfinex","koinex-bittrex", "cex-bitfinex"],
+  "buy_sell_crypto" : ["koinex-cex", "cex-koinex","koinex-bitfinex", "bitfinex-koinex","koinex-bittrex", "bittrex-koinex" ],
+  "buy_sell_exchanges" : ["cex-koinex","koinex-cex", "bitfinex-koinex","bittrex-koinex","bitfinex-cex","bittrex-cex", "bitfinex-bittrex","bittrex-bitfinex"],
   "global_crypto_supported" : ["BTC", "BCH", "ETH", "XRP", "LTC"],
   "exchanges" : {
     "cex" : {

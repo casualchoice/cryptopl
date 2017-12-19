@@ -46,9 +46,17 @@
 		    background-color: #5cb85c!important;
 				color:white;
 		}
+		.wrapper {
+			display: flex;
+		  align-items: center;
+		  justify-content: center;
+		}
 		</style>
 </head>
 	<body style="font-size:12px; padding:10px; letter-spacing: 2px;">
+		<p class="wrapper">
+			<input type="button" id="btnreload" class="btn-primary" value="Reload"/>
+		</p>
 		<div id="processTabs">
 			<ul>
 				<li><a href="#usdTab">USD</a></li>
@@ -61,7 +69,6 @@
 				</div>
 				<div class="row"  id="usdConversions" >
 				</div>
-				<input type="button" id="btnreload" class="btn-primary" value="Reload"/>
 				<hr/>
 				<div  >
 					<table class='table table-striped'>
@@ -78,6 +85,8 @@
 			<div id="tetherTab">
 			</div>
 			<div id="inrTab">
+					<input type="text" value="50000" id="inrAmount"/>
+					<div id="buySellCryptos"></div>
 			</div>
 			<div id="oldtab">
 				<iframe src="old.html" style="border:0" width="1000px" height="1000px" allowfullscreen></iframe>
